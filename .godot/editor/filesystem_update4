@@ -1,0 +1,12 @@
+res://main_menu.tscn
+res://CGoL/grid.gdshader
+res://grid.gdshader
+res://MainMenu.gd
+res://main.tscn
+res://preset_theme.tres
+res://main.gd
+res://CGoL/main.tscn
+res://CGoL/main.gd
+res://Boids/boids.tscn
+res://Boids/boids.gd
+res://Boids/boids.gdshader

@@ -1,9 +1,9 @@
+MultiMeshInstance2D
 Label
 GridContainer
 HSlider
 Timer
 CanvasLayer
-MultiMeshInstance2D
 GPUParticles2D
 Button
 VBoxContainer

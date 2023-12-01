@@ -28,15 +28,12 @@ vec2 calc_rule_1(uint boid) {
     int amount = 0;
     vec2 pos = vec2(in_buffer.data[boid],in_buffer.data[boid+1]);
     for (int i = 0; i < params.num_boids; i++) {
-        if (4*i == boid) {
-            continue;
-        }
         vec2 other_pos = vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]);
-        float is_active = 1 - step(params.one_distance,distance(other_pos,pos));
+        float is_active = float(4*i != boid) * (1 - step(params.one_distance,distance(other_pos,pos)));
         sum += is_active * other_pos;
         amount += int(is_active);
     }
-    if (amount == 0) {
+    if (amount <= 0) {
         return vec2(0);
     }
     sum /= amount;
@@ -63,14 +60,11 @@ vec2 calc_rule_3(uint boid) {
     vec2 pos = vec2(in_buffer.data[boid], in_buffer.data[boid + 1]);
     vec2 vel = vec2(in_buffer.data[boid + 2], in_buffer.data[boid + 3]);
     for (int i = 0; i < params.num_boids; i++) {
-        if (4*i == boid) {
-            continue;
-        }
-        float is_active = 1 - step(params.three_distance,distance(vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]),pos));
+        float is_active = float(4*i != boid) * (1 - step(params.three_distance,distance(vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]),pos)));
         sum += is_active * vec2(in_buffer.data[4*i+2],in_buffer.data[4*i+3]);
         amount += int(is_active);
     }
-    if (amount == 0) {
+    if (amount <= 0) {
         return vec2(0);
     }
     sum /= amount;

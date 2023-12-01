@@ -1,6 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://c76yvglesr64n"]
+[gd_scene load_steps=5 format=3 uid="uid://c76yvglesr64n"]
 
 [ext_resource type="Script" path="res://Boids/boids.gd" id="1_am1ad"]
+[ext_resource type="Texture2D" uid="uid://dy8tlsw84oamq" path="res://Boids/boid.png" id="2_to4qf"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_1w3pa"]
+
+[sub_resource type="MultiMesh" id="MultiMesh_31evr"]
+mesh = SubResource("QuadMesh_1w3pa")
 
 [node name="boids" type="Node2D"]
 texture_filter = 1
@@ -91,6 +97,10 @@ exp_edit = true
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
+
+[node name="BoidInstances" type="MultiMeshInstance2D" parent="."]
+multimesh = SubResource("MultiMesh_31evr")
+texture = ExtResource("2_to4qf")
 
 [connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="value_changed" from="CanvasLayer/GridContainer/Rule_One_Distance" to="." method="_on_rule_one_distance_value_changed"]

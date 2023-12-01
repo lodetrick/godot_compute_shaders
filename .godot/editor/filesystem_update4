@@ -2,6 +2,6 @@ res://Boids/boids.tscn
 res://CGoL/preset_theme.tres
 res://CGoL/grid.gdshader
 res://Boids/boids.gdshader
+res://Boids/boids.gd
 res://main_menu.tscn
 res://CGoL/main.tscn
-res://Boids/boids.gd

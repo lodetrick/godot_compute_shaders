@@ -50,24 +50,29 @@ func _ready():
 	$CanvasLayer/GridContainer/Rule_Three_Distance.value = parameters[7]
 	$CanvasLayer/GridContainer/Rule_Three_Strength.value = parameters[8]
 	is_ready = true
-
+	
 func _draw():
 	if not is_ready:
 		await ready
 	seed(10)
 	draw_rect(Rect2(400,100,700,500),Color.BLACK,false)
+	if $BoidInstances.multimesh.get_instance_count() != parameters[0]:
+		$BoidInstances.multimesh.set_instance_count(parameters[0])
 	for i in range(parameters[0]):
-		
-		var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
-		draw_set_transform_matrix(xform)
-		draw_colored_polygon(PackedVector2Array([Vector2(0,-6),Vector2(4,6),Vector2(-4,6)]),Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
-		#draw_texture(boid_texture,Vector2(-8,-8),Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
-		draw_circle(Vector2.ZERO,1,Color.BLACK)
-		draw_line(Vector2.ZERO,Vector2(0,-1) * Vector2(boid_buffer[i*4+2],boid_buffer[i*4+3]).length() * 10,Color.GREEN)
-		if i % 256 == 0:
-			draw_arc(Vector2.ZERO,parameters[3],0,TAU,50,Color.RED)
-			draw_arc(Vector2.ZERO,parameters[5],0,TAU,50,Color.GREEN)
-			draw_arc(Vector2.ZERO,parameters[7],0,TAU,50,Color.BLUE)
+		var transform = Transform2D().scaled(Vector2(10, 10)).rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
+		$BoidInstances.multimesh.set_instance_transform_2d(i, transform)
+	#for i in range(parameters[0]):
+	#	
+	#	var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
+	#	draw_set_transform_matrix(xform)
+	#	draw_colored_polygon(PackedVector2Array([Vector2(0,-6),Vector2(4,6),Vector2(-4,6)]),Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
+	#	#draw_texture(boid_texture,Vector2(-8,-8),Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
+	#	draw_circle(Vector2.ZERO,1,Color.BLACK)
+	#	draw_line(Vector2.ZERO,Vector2(0,-1) * Vector2(boid_buffer[i*4+2],boid_buffer[i*4+3]).length() * 10,Color.GREEN)
+	#	if i % 256 == 0:
+	#		draw_arc(Vector2.ZERO,parameters[3],0,TAU,50,Color.RED)
+	#		draw_arc(Vector2.ZERO,parameters[5],0,TAU,50,Color.GREEN)
+	#		draw_arc(Vector2.ZERO,parameters[7],0,TAU,50,Color.BLUE)
 
 func init_gpu():
 	rd = RenderingServer.create_local_rendering_device()

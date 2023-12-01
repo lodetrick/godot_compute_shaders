@@ -38,6 +38,10 @@ vec2 calc_rule_1(uint boid) {
     return (sum - pos) / params.one_strength;
 }
 
+vec2 calc_rule_2(uint boid) {
+    
+}
+
 // The code we want to execute in each invocation
 void main() {
     // gl_GlobalInvocationID.x uniquely identifies this invocation across all work groups

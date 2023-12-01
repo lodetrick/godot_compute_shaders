@@ -5,7 +5,7 @@
 [node name="boids" type="Node2D"]
 texture_filter = 1
 script = ExtResource("1_am1ad")
-parameters = Array[float]([512.0, 50.0, 50.0, 100.0, 10.0, 10.0, 1.0, 50.0, 100.0, 0.0])
+parameters = Array[float]([512.0, 1.0, 5.0, 100.0, 100.0, 30.0, 1.0, 50.0, 8.0, 0.0])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -22,9 +22,9 @@ offset_top = -16.0
 grow_horizontal = 2
 grow_vertical = 0
 max_value = 50.0
-exp_edit = true
 
 [node name="Timer" type="Timer" parent="."]
+one_shot = true
 
 [connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

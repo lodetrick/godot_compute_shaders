@@ -231,6 +231,8 @@ func _input(_event):
 		current_image.use_parent_material = cam.zoom.x < 6
 	if Input.is_action_just_pressed("step"):
 		compute_step()
+	if Input.is_action_just_pressed("ui_cancel"):
+		get_tree().change_scene_to_file("res://main_menu.tscn")
 	if Input.is_action_just_pressed("pause"):
 		if time_velocity <= 0.00000000001:
 			$CanvasLayer/TimeVelocity.value = saved_velocity

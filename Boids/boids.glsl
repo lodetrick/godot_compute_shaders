@@ -29,11 +29,15 @@ vec2 calc_rule_1(uint boid) {
     vec2 pos = vec2(in_buffer.data[boid],in_buffer.data[boid+1]);
     for (int i = 0; i < params.num_boids; i++) {
         if (4*i == boid) {
+            continue;
         }
-        if (distance(vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]),pos) < params.one_distance) {
-            sum += vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]);
-            amount += 1;
-        }
+        vec2 other_pos = vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]);
+        float is_active = 1 - step(params.one_distance,distance(other_pos,pos));
+        sum += is_active * other_pos;
+        amount += int(is_active);
+    }
+    if (amount == 0) {
+        return vec2(0);
     }
     sum /= amount;
     return (sum - pos) / params.one_strength;
@@ -44,44 +48,52 @@ vec2 calc_rule_2(uint boid) {
     vec2 pos = vec2(in_buffer.data[boid],in_buffer.data[boid+1]);
     for (int i = 0; i < params.num_boids; i++) {
         vec2 delta = vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]) - pos;
-        if (4*i == boid) {
+        if (length(delta) == 0) {
+            continue;
         }
-        if (length(delta) < params.two_distance) {
-            sum -= delta;
-        }
+        sum -= params.two_strength * pow(3,-length(delta) / 10) * normalize(delta);
     }
 
-    return sum / params.two_strength;
+    return sum;
 }
 
 vec2 calc_rule_3(uint boid) {
     vec2 sum = vec2(0);
     int amount = 0;
-    vec2 pos = vec2(in_buffer.data[boid],in_buffer.data[boid+1]);
-    vec2 vel = vec2(in_buffer.data[boid+2],in_buffer.data[boid+3]);
+    vec2 pos = vec2(in_buffer.data[boid], in_buffer.data[boid + 1]);
+    vec2 vel = vec2(in_buffer.data[boid + 2], in_buffer.data[boid + 3]);
     for (int i = 0; i < params.num_boids; i++) {
         if (4*i == boid) {
+            continue;
         }
-        if (distance(vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]),pos) < params.three_distance) {
-            sum += vec2(in_buffer.data[4*i+2],in_buffer.data[4*i+3]);
-            amount += 1;
-        }
+        float is_active = 1 - step(params.three_distance,distance(vec2(in_buffer.data[4*i],in_buffer.data[4*i+1]),pos));
+        sum += is_active * vec2(in_buffer.data[4*i+2],in_buffer.data[4*i+3]);
+        amount += int(is_active);
+    }
+    if (amount == 0) {
+        return vec2(0);
     }
     sum /= amount;
-    return (vel - sum) / params.three_strength;
+    return (sum - vel) / params.three_strength;
 }
 
 // The code we want to execute in each invocation
 void main() {
     // gl_GlobalInvocationID.x uniquely identifies this invocation across all work groups
     uint index = 4 * gl_GlobalInvocationID.x;
-    
+    vec2 velocity = vec2(in_buffer.data[index+2],in_buffer.data[index+3]);
     vec2 rule_1 = calc_rule_1(index);
     vec2 rule_2 = calc_rule_2(index);
     vec2 rule_3 = calc_rule_3(index);
 
-    out_buffer.data[index+2] = clamp(in_buffer.data[index+2] + rule_1.x + rule_2.x + rule_3.x,-1 * params.boid_speed,params.boid_speed);
-    out_buffer.data[index+3] = clamp(in_buffer.data[index+3] + rule_1.y + rule_2.y + rule_3.y,-1 * params.boid_speed,params.boid_speed);
-    out_buffer.data[index] = in_buffer.data[index] + out_buffer.data[index+2] * 0.01;
-    out_buffer.data[index+1] = in_buffer.data[index+1] + out_buffer.data[index+3] * 0.01;
+    vec2 delta_vel = rule_1 + rule_2 + rule_3;
+    delta_vel = delta_vel + velocity;
+    if (length(delta_vel) > params.boid_speed) {
+        delta_vel *= params.boid_speed / length(delta_vel);
+    }
+
+    out_buffer.data[index+2] = delta_vel.x;
+    out_buffer.data[index+3] = delta_vel.y;
+    out_buffer.data[index] = mod(in_buffer.data[index] + out_buffer.data[index+2],700);
+    out_buffer.data[index+1] = mod(in_buffer.data[index+1] + out_buffer.data[index+3],500);
 }

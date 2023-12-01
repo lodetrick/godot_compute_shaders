@@ -33,6 +33,7 @@ var is_ready: bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	randomize()
 	boid_buffer.resize(int(4 * parameters[0]))
 	for i in range(parameters[0]):
 		boid_buffer[4*i] = randf_range(100,800)
@@ -51,8 +52,13 @@ func _draw():
 		
 		var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(boid_buffer[i*4],boid_buffer[i*4+1]))
 		draw_set_transform_matrix(xform)
-		draw_texture(boid_texture,Vector2(-8,-8),Color(randf_range(0,1),randf_range(0,1),randf_range(0,1)))
+		draw_texture(boid_texture,Vector2(-8,-8),Color(abs(boid_buffer[i*4+3]),0,abs(boid_buffer[i*4+2])))#randf_range(0,1),randf_range(0,1),randf_range(0,1)))
 		draw_circle(Vector2.ZERO,1,Color.BLACK)
+		draw_line(Vector2.ZERO,Vector2(0,-1) * Vector2(boid_buffer[i*4+2],boid_buffer[i*4+3]).length(),Color.GREEN)
+		if i % 256 == 0:
+			draw_arc(Vector2.ZERO,parameters[3],0,TAU,50,Color.RED)
+			draw_arc(Vector2.ZERO,parameters[5],0,TAU,50,Color.GREEN)
+			draw_arc(Vector2.ZERO,parameters[7],0,TAU,50,Color.BLUE)
 
 func init_gpu():
 	rd = RenderingServer.create_local_rendering_device()
@@ -122,9 +128,14 @@ func _input(_event):
 		get_tree().change_scene_to_file("res://main_menu.tscn")
 
 func _on_h_slider_value_changed(value):
-	parameters[9] = 1 / value
+	if value == 0:
+		parameters[9] = value
+	else:
+		parameters[9] = 1 / value
 	if value != 0:
 		$Timer.start(1 / value)
 
 func _on_timer_timeout():
 	compute_step()
+	if parameters[9] != 0:
+		$Timer.start(parameters[9])

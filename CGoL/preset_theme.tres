@@ -1,0 +1,17 @@
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://yxicx0l8j7x7"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3iri"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rivuc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dtif0"]
+bg_color = Color(0.164706, 0.164706, 0.164706, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wp7ar"]
+bg_color = Color(0.384314, 0.615686, 0.870588, 1)
+
+[resource]
+Button/styles/disabled = SubResource("StyleBoxEmpty_i3iri")
+Button/styles/focus = SubResource("StyleBoxEmpty_rivuc")
+Button/styles/normal = SubResource("StyleBoxFlat_dtif0")
+Button/styles/pressed = SubResource("StyleBoxFlat_wp7ar")

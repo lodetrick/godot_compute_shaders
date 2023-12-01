@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://c76yvglesr64n"]
+
+[ext_resource type="Script" path="res://Boids/boids.gd" id="1_am1ad"]
+
+[node name="boids" type="Node2D"]
+texture_filter = 1
+script = ExtResource("1_am1ad")
+parameters = Array[float]([512.0, 50.0, 100.0, 1.0, 100.0, 1.0, 100.0, 1.0, 2.08165e-12])
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TotalTimeLabel" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="HSlider" type="HSlider" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_top = 1.0
+anchor_right = 0.36
+anchor_bottom = 1.0
+offset_top = -16.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 50.0
+exp_edit = true
+
+[node name="Timer" type="Timer" parent="."]
+
+[connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

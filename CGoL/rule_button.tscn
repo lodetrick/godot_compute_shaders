@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c4mpgarvefe7e"]
+
+[ext_resource type="Theme" uid="uid://yxicx0l8j7x7" path="res://CGoL/preset_theme.tres" id="1_4g4it"]
+[ext_resource type="Script" path="res://CGoL/rule_button.gd" id="2_qosjs"]
+
+[node name="Button" type="Button"]
+texture_filter = 1
+custom_minimum_size = Vector2(32, 32)
+focus_mode = 0
+theme = ExtResource("1_4g4it")
+toggle_mode = true
+script = ExtResource("2_qosjs")
+
+[connection signal="toggled" from="." to="." method="_on_toggled"]

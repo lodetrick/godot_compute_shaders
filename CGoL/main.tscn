@@ -1,0 +1,203 @@
+[gd_scene load_steps=8 format=3 uid="uid://n0u5b1dphend"]
+
+[ext_resource type="Script" path="res://CGoL/main.gd" id="1_qp7a6"]
+[ext_resource type="Texture2D" uid="uid://onhbdpfolbag" path="res://CGoL/outline.png" id="2_dxp81"]
+
+[sub_resource type="Gradient" id="Gradient_rdhgw"]
+offsets = PackedFloat32Array(0.683871, 0.687097)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_jyr34"]
+frequency = 0.1
+fractal_type = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_n2e7n"]
+width = 1024
+height = 1024
+generate_mipmaps = false
+color_ramp = SubResource("Gradient_rdhgw")
+noise = SubResource("FastNoiseLite_jyr34")
+
+[sub_resource type="Shader" id="Shader_1bakn"]
+code = "shader_type canvas_item;
+
+uniform float epsilon = 0.001;
+
+void fragment() {
+	if (mod(UV.x,TEXTURE_PIXEL_SIZE.x) < 0.0001) {
+		COLOR = vec4(0,0,0,1);
+	}
+	if (mod(UV.y,TEXTURE_PIXEL_SIZE.y) < 0.0001) {
+		COLOR = vec4(0,0,0,1);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7uj8v"]
+shader = SubResource("Shader_1bakn")
+shader_parameter/epsilon = 0.001
+
+[node name="main" type="Node2D"]
+script = ExtResource("1_qp7a6")
+dimensions = Vector2i(1024, 1024)
+view_boundary = Rect2(50, 150, 1026, 456)
+settings = Array[float]([1.0, 1.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+noise_texture = SubResource("NoiseTexture2D_n2e7n")
+
+[node name="CurrentImage" type="Sprite2D" parent="."]
+texture_filter = 1
+material = SubResource("ShaderMaterial_7uj8v")
+
+[node name="ViewCamera" type="Camera2D" parent="."]
+zoom = Vector2(10, 10)
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_dxp81")
+
+[node name="Button" type="Button" parent="CanvasLayer"]
+visible = false
+offset_right = 43.0
+offset_bottom = 31.0
+text = "Step"
+
+[node name="TimeVelocity" type="HSlider" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_left = 0.1
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_top = -25.0
+offset_right = 1.14441e-05
+offset_bottom = -9.0
+grow_horizontal = 2
+grow_vertical = 0
+max_value = 30.0
+step = 0.1
+tick_count = 10
+
+[node name="Label" type="Label" parent="CanvasLayer"]
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -235.0
+offset_top = -26.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Time Scale: 0 steps per second"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer"]
+offset_left = 54.0
+offset_top = 119.0
+offset_right = 1080.0
+offset_bottom = 159.0
+
+[node name="PanButton" type="Button" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Pan"
+
+[node name="DrawButton" type="Button" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Draw"
+
+[node name="ClearButton" type="Button" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Clear"
+
+[node name="UploadButton" type="Button" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Upload File"
+
+[node name="OptionButton" type="OptionButton" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+item_count = 6
+popup/item_0/text = "Gospel Glider Gun"
+popup/item_0/id = 0
+popup/item_1/text = "Infinite Growth"
+popup/item_1/id = 1
+popup/item_2/text = "Space Rake"
+popup/item_2/id = 2
+popup/item_3/text = "Backrake"
+popup/item_3/id = 3
+popup/item_4/text = "Puffer 1"
+popup/item_4/id = 4
+popup/item_5/text = "Weekender"
+popup/item_5/id = 5
+
+[node name="Button" type="Button" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Load"
+
+[node name="ScrambleButton" type="Button" parent="CanvasLayer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+text = "Scramble"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+layout_direction = 3
+offset_left = 396.0
+offset_top = 50.0
+offset_right = 486.0
+offset_bottom = 140.0
+
+[node name="RuleLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Rules (#Neighbors):"
+
+[node name="AliveLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "When Alive"
+
+[node name="DeadLabel" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "When Dead"
+
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer"]
+offset_left = 1078.27
+offset_top = 71.28
+offset_right = 1078.27
+offset_bottom = 161.28
+grow_horizontal = 0
+columns = 9
+
+[node name="TotalTimeLabel" type="Label" parent="CanvasLayer"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+initial_position = 1
+size = Vector2i(611, 162)
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png; PNG Images")
+
+[connection signal="tree_exiting" from="." to="." method="cleanup_gpu"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="pressed" from="CanvasLayer/Button" to="." method="compute_step"]
+[connection signal="value_changed" from="CanvasLayer/TimeVelocity" to="." method="_on_time_velocity_value_changed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/PanButton" to="." method="_on_pan_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/DrawButton" to="." method="_on_draw_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/ClearButton" to="." method="_on_clear_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/UploadButton" to="." method="_on_upload_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="CanvasLayer/HBoxContainer/ScrambleButton" to="." method="_on_scramble_button_pressed"]
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]

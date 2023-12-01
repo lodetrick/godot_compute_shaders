@@ -29,6 +29,7 @@ var boid_out_buffer_rid: RID
 var params_buffer_rid: RID
 var param_uniform: RDUniform
 
+var saved_velocity: float = 50
 var is_ready: bool = false
 
 # Called when the node enters the scene tree for the first time.
@@ -36,25 +37,33 @@ func _ready():
 	randomize()
 	boid_buffer.resize(int(4 * parameters[0]))
 	for i in range(parameters[0]):
-		boid_buffer[4*i] = randf_range(100,800)
-		boid_buffer[4*i+1] = randf_range(100,600)
-		boid_buffer[4*i+2] = randf_range(-100,100)
-		boid_buffer[4*i+3] = randf_range(-100,100)
+		boid_buffer[4*i] = randf_range(0,700)
+		boid_buffer[4*i+1] = randf_range(0,500)
+		boid_buffer[4*i+2] = randf_range(-1,1)
+		boid_buffer[4*i+3] = randf_range(-1,1)
 	
 	init_gpu()
+	$CanvasLayer/GridContainer/Rule_One_Distance.value = parameters[3]
+	$CanvasLayer/GridContainer/Rule_One_Strength.value = parameters[4]
+	$CanvasLayer/GridContainer/Rule_Two_Distance.value = parameters[5]
+	$CanvasLayer/GridContainer/Rule_Two_Strength.value = parameters[6]
+	$CanvasLayer/GridContainer/Rule_Three_Distance.value = parameters[7]
+	$CanvasLayer/GridContainer/Rule_Three_Strength.value = parameters[8]
 	is_ready = true
 
 func _draw():
 	if not is_ready:
 		await ready
 	seed(10)
+	draw_rect(Rect2(400,100,700,500),Color.BLACK,false)
 	for i in range(parameters[0]):
 		
-		var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(boid_buffer[i*4],boid_buffer[i*4+1]))
+		var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
 		draw_set_transform_matrix(xform)
-		draw_texture(boid_texture,Vector2(-8,-8),Color(abs(boid_buffer[i*4+3]),0,abs(boid_buffer[i*4+2])))#randf_range(0,1),randf_range(0,1),randf_range(0,1)))
+		draw_colored_polygon(PackedVector2Array([Vector2(0,-6),Vector2(4,6),Vector2(-4,6)]),Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
+		#draw_texture(boid_texture,Vector2(-8,-8),Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
 		draw_circle(Vector2.ZERO,1,Color.BLACK)
-		draw_line(Vector2.ZERO,Vector2(0,-1) * Vector2(boid_buffer[i*4+2],boid_buffer[i*4+3]).length(),Color.GREEN)
+		draw_line(Vector2.ZERO,Vector2(0,-1) * Vector2(boid_buffer[i*4+2],boid_buffer[i*4+3]).length() * 10,Color.GREEN)
 		if i % 256 == 0:
 			draw_arc(Vector2.ZERO,parameters[3],0,TAU,50,Color.RED)
 			draw_arc(Vector2.ZERO,parameters[5],0,TAU,50,Color.GREEN)
@@ -126,16 +135,43 @@ func _input(_event):
 		compute_step()
 	if Input.is_action_just_pressed("ui_cancel"):
 		get_tree().change_scene_to_file("res://main_menu.tscn")
+	if Input.is_action_just_pressed("pause"):
+		if parameters[9] <= 0:
+			$CanvasLayer/HSlider.value = saved_velocity
+		else:
+			$CanvasLayer/HSlider.value = 0
 
 func _on_h_slider_value_changed(value):
-	if value == 0:
-		parameters[9] = value
-	else:
-		parameters[9] = 1 / value
+	parameters[9] = value
 	if value != 0:
+		saved_velocity = value
 		$Timer.start(1 / value)
 
 func _on_timer_timeout():
-	compute_step()
 	if parameters[9] != 0:
-		$Timer.start(parameters[9])
+		$Timer.start(1 / parameters[9])
+	compute_step()
+
+func _on_rule_one_distance_value_changed(value):
+	parameters[3] = value
+	set_params_uniform()
+
+func _on_rule_one_strength_value_changed(value):
+	parameters[4] = value
+	set_params_uniform()
+
+func _on_rule_two_distance_value_changed(value):
+	parameters[5] = value
+	set_params_uniform()
+
+func _on_rule_two_strength_value_changed(value):
+	parameters[6] = value
+	set_params_uniform()
+
+func _on_rule_three_distance_value_changed(value):
+	parameters[7] = value
+	set_params_uniform()
+
+func _on_rule_three_strength_value_changed(value):
+	parameters[8] = value
+	set_params_uniform()

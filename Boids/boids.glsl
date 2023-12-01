@@ -51,7 +51,7 @@ vec2 calc_rule_2(uint boid) {
         if (length(delta) == 0) {
             continue;
         }
-        sum -= params.two_strength * pow(3,-length(delta) / 10) * normalize(delta);
+        sum -= params.two_strength * pow(params.two_distance,-length(delta) / 10) * normalize(delta);
     }
 
     return sum;
@@ -88,6 +88,7 @@ void main() {
 
     vec2 delta_vel = rule_1 + rule_2 + rule_3;
     delta_vel = delta_vel + velocity;
+    delta_vel *= 1.1;
     if (length(delta_vel) > params.boid_speed) {
         delta_vel *= params.boid_speed / length(delta_vel);
     }

@@ -5,7 +5,7 @@
 [node name="boids" type="Node2D"]
 texture_filter = 1
 script = ExtResource("1_am1ad")
-parameters = Array[float]([512.0, 1.0, 5.0, 100.0, 100.0, 30.0, 1.0, 50.0, 8.0, 0.0])
+parameters = Array[float]([512.0, 1.0, 5.0, 30.0, 100.0, 10.0, 1.0, 10.0, 8.0, 0.0])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -23,8 +23,80 @@ grow_horizontal = 2
 grow_vertical = 0
 max_value = 50.0
 
+[node name="GridContainer" type="GridContainer" parent="CanvasLayer"]
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -43.0
+offset_right = 260.0
+offset_bottom = 43.0
+grow_vertical = 2
+columns = 3
+
+[node name="BlankLabel" type="Label" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="DistLabel" type="Label" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+text = "Distance"
+
+[node name="StrLabel" type="Label" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+text = "Strength"
+
+[node name="RuleOneLabel" type="Label" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+text = "Rule 1:"
+
+[node name="Rule_One_Distance" type="HSlider" parent="CanvasLayer/GridContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
+
+[node name="Rule_One_Strength" type="HSlider" parent="CanvasLayer/GridContainer"]
+custom_minimum_size = Vector2(100, 2.08165e-12)
+layout_mode = 2
+min_value = 1.0
+max_value = 500.0
+value = 1.0
+
+[node name="RuleTwoLabel" type="Label" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+text = "Rule 2:"
+
+[node name="Rule_Two_Distance" type="HSlider" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+min_value = 1.5
+max_value = 10.0
+value = 1.5
+exp_edit = true
+
+[node name="Rule_Two_Strength" type="HSlider" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+exp_edit = true
+
+[node name="RuleThreeLabel" type="Label" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+text = "Rule 3:"
+
+[node name="Rule_Three_Distance" type="HSlider" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+
+[node name="Rule_Three_Strength" type="HSlider" parent="CanvasLayer/GridContainer"]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
+exp_edit = true
+
 [node name="Timer" type="Timer" parent="."]
 one_shot = true
 
 [connection signal="value_changed" from="CanvasLayer/HSlider" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/GridContainer/Rule_One_Distance" to="." method="_on_rule_one_distance_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/GridContainer/Rule_One_Strength" to="." method="_on_rule_one_strength_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/GridContainer/Rule_Two_Distance" to="." method="_on_rule_two_distance_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/GridContainer/Rule_Two_Strength" to="." method="_on_rule_two_strength_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/GridContainer/Rule_Three_Distance" to="." method="_on_rule_three_distance_value_changed"]
+[connection signal="value_changed" from="CanvasLayer/GridContainer/Rule_Three_Strength" to="." method="_on_rule_three_strength_value_changed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

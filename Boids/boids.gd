@@ -5,6 +5,7 @@ const boid_texture = preload("res://Boids/boid.png")
 @export var parameters: Array[float]
 #num boids
 #max speed
+#acceleration
 #rule 1 distance
 #rule 1 strength
 #rule 2 distance
@@ -45,10 +46,13 @@ func _ready():
 func _draw():
 	if not is_ready:
 		await ready
+	seed(10)
 	for i in range(parameters[0]):
+		
 		var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(boid_buffer[i*4],boid_buffer[i*4+1]))
 		draw_set_transform_matrix(xform)
-		draw_texture(boid_texture,Vector2.ZERO)
+		draw_texture(boid_texture,Vector2(-8,-8),Color(randf_range(0,1),randf_range(0,1),randf_range(0,1)))
+		draw_circle(Vector2.ZERO,1,Color.BLACK)
 
 func init_gpu():
 	rd = RenderingServer.create_local_rendering_device()
@@ -118,7 +122,7 @@ func _input(_event):
 		get_tree().change_scene_to_file("res://main_menu.tscn")
 
 func _on_h_slider_value_changed(value):
-	parameters[8] = 1 / value
+	parameters[9] = 1 / value
 	if value != 0:
 		$Timer.start(1 / value)
 

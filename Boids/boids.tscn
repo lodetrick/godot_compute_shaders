@@ -5,7 +5,7 @@
 [node name="boids" type="Node2D"]
 texture_filter = 1
 script = ExtResource("1_am1ad")
-parameters = Array[float]([512.0, 50.0, 100.0, 1.0, 100.0, 1.0, 100.0, 1.0, 2.08165e-12])
+parameters = Array[float]([512.0, 50.0, 50.0, 100.0, 10.0, 10.0, 1.0, 50.0, 100.0, 0.0])
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

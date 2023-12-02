@@ -6,6 +6,7 @@
 [sub_resource type="QuadMesh" id="QuadMesh_1w3pa"]
 
 [sub_resource type="MultiMesh" id="MultiMesh_31evr"]
+use_colors = true
 mesh = SubResource("QuadMesh_1w3pa")
 
 [node name="boids" type="Node2D"]

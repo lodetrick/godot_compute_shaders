@@ -5,3 +5,4 @@ res://Boids/boids.gdshader
 res://Boids/boids.gd
 res://main_menu.tscn
 res://CGoL/main.tscn
+res://CGoL/main.gd

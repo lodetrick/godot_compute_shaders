@@ -58,11 +58,17 @@ func _draw():
 	draw_rect(Rect2(400,100,700,500),Color.BLACK,false)
 	if $BoidInstances.multimesh.get_instance_count() != parameters[0]:
 		$BoidInstances.multimesh.set_instance_count(parameters[0])
+	
 	for i in range(parameters[0]):
-		var transform = Transform2D().scaled(Vector2(10, 10)).rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
+		var transform = Transform2D().scaled(Vector2(10, 10)).rotated(Vector2(boid_buffer[i*4+3],-boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
 		$BoidInstances.multimesh.set_instance_transform_2d(i, transform)
-	#for i in range(parameters[0]):
-	#	
+		$BoidInstances.multimesh.set_instance_color(i, Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
+		if i % 256 == 0:
+			var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
+			draw_set_transform_matrix(xform)
+			draw_arc(Vector2.ZERO,parameters[3],0,TAU,50,Color.RED)
+			draw_arc(Vector2.ZERO,parameters[5],0,TAU,50,Color.GREEN)
+			draw_arc(Vector2.ZERO,parameters[7],0,TAU,50,Color.BLUE)
 	#	var xform = Transform2D().rotated(Vector2(-boid_buffer[i*4+3],boid_buffer[i*4+2]).angle()).translated(Vector2(400+boid_buffer[i*4],100+boid_buffer[i*4+1]))
 	#	draw_set_transform_matrix(xform)
 	#	draw_colored_polygon(PackedVector2Array([Vector2(0,-6),Vector2(4,6),Vector2(-4,6)]),Color(abs(boid_buffer[i*4+2]),0,abs(boid_buffer[i*4+3])))
@@ -122,7 +128,7 @@ func compute_step():
 	var compute_list := rd.compute_list_begin()
 	rd.compute_list_bind_compute_pipeline(compute_list, pipeline)
 	rd.compute_list_bind_uniform_set(compute_list, uniform_set, 0)
-	rd.compute_list_dispatch(compute_list, parameters[0] / 128, 1, 1)
+	rd.compute_list_dispatch(compute_list, parameters[0] / 512, 1, 1)
 	rd.compute_list_end()
 	
 	rd.submit()

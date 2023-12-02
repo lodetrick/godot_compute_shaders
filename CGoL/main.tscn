@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://onhbdpfolbag" path="res://CGoL/outline.png" id="2_dxp81"]
 
 [sub_resource type="Gradient" id="Gradient_rdhgw"]
-offsets = PackedFloat32Array(0.683871, 0.687097)
+offsets = PackedFloat32Array(0.685, 0.685)
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 1)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_jyr34"]

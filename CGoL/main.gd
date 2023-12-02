@@ -111,6 +111,8 @@ func create_image() -> Image:
 		image.fill(Color(255,0,0))
 	else:
 		image = current_img
+		if image.get_format() != Image.FORMAT_L8:
+			image.convert(Image.FORMAT_L8)
 	return image
 
 func compute_step():
@@ -189,11 +191,15 @@ func _on_timer_timeout():
 	compute_step()
 
 func draw(pos: Vector2):
+	if pos.x > dimensions.x / 2 or pos.x < -dimensions.x / 2 or pos.y < -dimensions.y / 2 or pos.y > dimensions.y / 2:
+		return
 	$CanvasLayer/TimeVelocity.value = 0
 	current_img.set_pixel(int(pos.x+dimensions.x/2),int(pos.y+dimensions.y/2),Color(0,0,0))
 	set_image(current_img)
 
 func erase(pos: Vector2):
+	if pos.x > dimensions.x / 2 or pos.x < -dimensions.x / 2 or pos.y < -dimensions.y / 2 or pos.y > dimensions.y / 2:
+		return
 	$CanvasLayer/TimeVelocity.value = 0
 	current_img.set_pixel(int(pos.x+dimensions.x/2),int(pos.y+dimensions.y/2),Color(255,0,0))
 	set_image(current_img)

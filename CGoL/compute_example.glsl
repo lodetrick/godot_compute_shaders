@@ -28,7 +28,7 @@ void main() {
                     + imageLoad(in_data,move(coords,ivec2(0,1))).r
                     + imageLoad(in_data,move(coords,ivec2(0,-1))).r));
     
-    float is_active = params.rules[int(imageLoad(in_data,coords).r) * 9 + num_neighbors];
+    float is_active = params.rules[int(imageLoad(in_data,coords).r * 9 + num_neighbors)];
     
 
     imageStore(out_data,coords,vec4(is_active));
